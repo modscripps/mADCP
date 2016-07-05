@@ -1,4 +1,4 @@
-function ADP = WHbeam_ProcessFunctionVectorized(ADRaw,UpDown,ZGrid,theta_o,Cnvx,MagDec,WC_val,ExcludeBins)
+function ADP = WHbeam_ProcessFunctionVectorized(ADRaw,UpDown,ZGrid,theta_o,Cnvx,MagDec,WC_val,ExcludeBins,BadBeam)
 
 % WHbeam_ProcessFunctionVectorized (well, partly, still looping a lot)
 %
@@ -7,7 +7,11 @@ function ADP = WHbeam_ProcessFunctionVectorized(ADRaw,UpDown,ZGrid,theta_o,Cnvx,
 % Check for exclude bins
 if nargin<8
   ExcludeBins = 0;
+  BadBeam = [];
+elseif nargin<9
+  BadBeam = [];
 end
+
 
 % initialize output structure
 ADP.depth = ZGrid; % surface-relative depth grid
@@ -61,8 +65,8 @@ ix = find(ADRaw.cor4_bm(:) < WC_val);
 ADRaw.v4(ix) = NaN;
 
 % RDI transformation matrix from beams 1-4 to
-%   u(1-2), v(4-3), w(avg xz,yz), err vel 
-Bm2InTx = beam2inst(theta_o, Cnvx);
+%   u(1-2), v(4-3), w(avg xz,yz), err vel
+Bm2InTx = beam2inst(theta_o, Cnvx, BadBeam);
 % Make range vector from the depth vector (before pitch/roll adjustments)
 c_tho = cos(theta_o*pi/180);
 s_tho = sin(theta_o*pi/180);
@@ -266,11 +270,22 @@ for ic = 1:length(ADP.dtnum)
   end
   
 In2Geo = inst2earth(ADP.heading(ic)+MagDec, ADP.pitch(ic), ADP.roll(ic), UpDown);
+if ~isempty(BadBeam)
+  In2Geo = In2Geo(1:3,1:3);
+end
+if isempty(BadBeam)
 VelsGeo = ( In2Geo * Bm2InTx * [u1(:,ic) u2(:,ic) u3(:,ic) u4(:,ic)]' )';
     ADP.u(:,ic) = VelsGeo(:,1);
     ADP.v(:,ic) = VelsGeo(:,2);
     ADP.w(:,ic) = VelsGeo(:,3);
     ADP.werr(:,ic) = VelsGeo(:,4);
+elseif BadBeam==3
+    tmp = Bm2InTx(1:3,[1 2 4]) * [u1(:,ic) u2(:,ic) u4(:,ic)]';
+    VelsGeo = ( In2Geo * tmp )';
+    ADP.u(:,ic) = VelsGeo(:,1);
+    ADP.v(:,ic) = VelsGeo(:,2);
+    ADP.w(:,ic) = VelsGeo(:,3);
+end
 end
 fprintf(repmat('\b',1,28))
 fprintf('|%s->|100%%\n',repmat('-',1,21))

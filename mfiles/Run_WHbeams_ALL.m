@@ -56,6 +56,11 @@ MooringID = InP.MooringID;
 Lat       = InP.Lat;
 Lon       = InP.Lon;
 NomDepth  = InP.NomBotDepth;
+if isfield(InP,'BadBeam')
+  BadBeam   = InP.BadBeam;
+else
+  BadBeam = [];
+end
 
 Vel = [];
 depthvec = [];
@@ -165,7 +170,7 @@ end
 
 %% Convert to earth coordinates
 fprintf('- Converting to earth coordinates...\n')
-ADP = WHbeam_ProcessFunctionVectorized(ADRaw,UpDown,ZGrid,theta_o,Cnvx,MagDec,WC_val,ExcludeBins);
+ADP = WHbeam_ProcessFunctionVectorized(ADRaw,UpDown,ZGrid,theta_o,Cnvx,MagDec,WC_val,ExcludeBins,BadBeam);
 
 % Averaging echo intensities
 ecMM = ones(length(ADP.depth),length(ADP.dtnum),4);
