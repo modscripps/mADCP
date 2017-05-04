@@ -61,7 +61,9 @@ InP.set.Ztyp = 1; % Type of output depth grid: surface rel = 1; ADCP rel = 0;
 InP.set.Ptyp = 0; % beam coords and all pings = 0, earth coords (ensembles) = 1;
 InP.set.Sal0 = -1; % <0=use recorded soundspeed, >0(eg 35)= use this salinity for soundspeed calc
    
-
+% Provide number of bad beam for 3 beam solution. Leave empty or comment
+% out if all beams are working. Currently only working for bad beam 3.
+InP.BadBeam = [];
 
 %% DATA CULLING / QUALITY CONTROL SETTINGS
                      
