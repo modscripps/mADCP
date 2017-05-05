@@ -1,5 +1,20 @@
 function Vel = Average_ADCP_WHearth(AllVel, AvgInt, TimeVecInt)
 
+% Average_ADCP_WHearth Average moored ADCP data in time
+%
+%   Vel = Average_ADCP_WHearth(AllVel, AvgInt, TimeVecInt)
+%
+%   INPUT   AllVel -     Single ping ADCP data in earth coordinates (output
+%                        from Run_WHbeams_ALL)
+%           AvgInt -     Averaging interval (in hours)
+%           TimeVecInt - Interval of new time grid (in hours)
+%       
+%   OUTPUT  Vel - Structure with time-averaged velocities
+%
+%   Gunnar Voet
+%   gvoet@ucsd.edu
+%
+%   Changed: 2017-05-04
 
 Vel = AllVel;
 
