@@ -6,8 +6,8 @@ function Vel = Average_ADCP_WHearth(AllVel, AvgInt, TimeVecInt)
 %
 %   INPUT   AllVel -     Single ping ADCP data in earth coordinates (output
 %                        from Run_WHbeams_ALL)
-%           AvgInt -     Averaging interval (in hours)
-%           TimeVecInt - Interval of new time grid (in hours)
+%           AvgInt -     Averaging interval (in minutes)
+%           TimeVecInt - Interval of new time grid (in minutes)
 %       
 %   OUTPUT  Vel - Structure with time-averaged velocities
 %
